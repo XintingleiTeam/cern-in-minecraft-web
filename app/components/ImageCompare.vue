@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { cernMedia } from '~/data/media'
+import { cernMedia, type ReferenceMedia } from '~/data/media'
 const assetPath = useAssetPath()
 const { t } = useLocale()
-withDefaults(defineProps<{ subject?: string; media?: (typeof cernMedia)[number] }>(), { subject: '园区全景', media: () => cernMedia[0] })
+withDefaults(defineProps<{ subject?: string; media?: ReferenceMedia }>(), { subject: '园区全景', media: () => cernMedia[0] })
 </script>
 <template>
   <figure class="comparison">

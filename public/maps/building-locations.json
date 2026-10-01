@@ -1,0 +1,53 @@
+[
+  {
+    "buildingNumber": "80",
+    "source": "https://maps.cern.ch/arcgis/rest/services/Batiments/GeocodeServer/findAddressCandidates?SingleLine=80&outSR=4326&maxLocations=1&f=json",
+    "address": "80",
+    "location": {
+      "x": 6.055590885629,
+      "y": 46.233822937967
+    },
+    "score": 100,
+    "attributes": {},
+    "extent": {
+      "xmin": 6.054540605825,
+      "ymin": 46.232822937966,
+      "xmax": 6.05664109104,
+      "ymax": 46.234822937967
+    }
+  },
+  {
+    "buildingNumber": "3179",
+    "source": "https://maps.cern.ch/arcgis/rest/services/Batiments/GeocodeServer/findAddressCandidates?SingleLine=3179&outSR=4326&maxLocations=1&f=json",
+    "address": "3179",
+    "location": {
+      "x": 6.054978678054,
+      "y": 46.234650317849
+    },
+    "score": 100,
+    "attributes": {},
+    "extent": {
+      "xmin": 6.053928375549,
+      "ymin": 46.233650317849,
+      "xmax": 6.056028906166,
+      "ymax": 46.23565031785
+    }
+  },
+  {
+    "buildingNumber": "300",
+    "source": "https://maps.cern.ch/arcgis/rest/services/Batiments/GeocodeServer/findAddressCandidates?SingleLine=300&outSR=4326&maxLocations=1&f=json",
+    "address": "300",
+    "location": {
+      "x": 6.052627151069,
+      "y": 46.233037007844
+    },
+    "score": 100,
+    "attributes": {},
+    "extent": {
+      "xmin": 6.051576765792,
+      "ymin": 46.232037007844,
+      "xmax": 6.053677461953,
+      "ymax": 46.234037007845
+    }
+  }
+]
