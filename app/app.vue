@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { locale, t } = useLocale()
+useHead(() => ({ htmlAttrs: { lang: locale.value }, title: t('CERN · Minecraft 项目') }))
 const assetPath = useAssetPath()
 useHead({ link: [{ rel: 'icon', type: 'image/x-icon', href: assetPath('/favicon.ico') }] })
 const effects = ref<{ leave: (el: Element, done: () => void) => void; enter: (el: Element, done: () => void) => void }>()
@@ -7,7 +9,7 @@ function enter(el: Element, done: () => void) { effects.value ? effects.value.en
 </script>
 <template>
   <NuxtRouteAnnouncer />
-  <a class="skip-link" href="#main">跳到主要内容</a>
+  <a class="skip-link" href="#main">{{ t('跳到主要内容') }}</a>
   <SiteEffects ref="effects" />
   <SiteHeader />
   <main id="main" tabindex="-1"><NuxtPage :transition="{ css: false, mode: 'out-in', onLeave: leave, onEnter: enter }" /></main>

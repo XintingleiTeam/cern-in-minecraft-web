@@ -6,10 +6,10 @@ const blocks = ref<{ delayIn: number; delayOut: number }[]>([])
 const columns = ref(1)
 const rows = ref(1)
 const reduced = useState('reduced-motion', () => false)
-const paused = useState('motion-paused', () => false)
 let preference: MediaQueryList
 let hover: MediaQueryList
 let observer: IntersectionObserver | undefined
+let entering = true
 let card: HTMLElement | null = null
 let frame = 0
 let pointerX = 0
@@ -21,26 +21,29 @@ function resetCard() { if (card) { card.style.transform = ''; card.style.removeP
 function reveal() {
   observer?.disconnect()
   const elements = document.querySelectorAll<HTMLElement>('.reveal-up, .mask-reveal-el')
-  if (reduced.value || paused.value) { elements.forEach(el => el.classList.add('in')); return }
+  if (reduced.value) { elements.forEach(el => el.classList.add('in')); return }
+  elements.forEach(el => el.classList.add('reveal-ready'))
+  // Start content motion after the tile curtain, so the first viewport's reveal remains visible.
+  if (entering) return
   observer = new IntersectionObserver(entries => { for (const entry of entries) if (entry.isIntersecting) { entry.target.classList.add('in'); observer?.unobserve(entry.target) } }, { threshold: .1 })
-  elements.forEach(el => { el.classList.add('reveal-ready'); observer?.observe(el) })
+  elements.forEach(el => { if (!el.classList.contains('in')) observer?.observe(el) })
 }
 function syncVisibility() { document.documentElement.classList.toggle('page-is-hidden', document.hidden) }
 function syncMotion() {
   reduced.value = preference.matches
-  document.documentElement.classList.toggle('motion-paused', paused.value || reduced.value)
-  if (paused.value || reduced.value) { if (overlay.value) overlay.value.style.visibility = 'hidden'; animations.forEach(a => a.cancel()); resetCard() }
+  document.documentElement.classList.toggle('reduced-motion', reduced.value)
+  if (reduced.value) { if (overlay.value) overlay.value.style.visibility = 'hidden'; animations.forEach(a => a.cancel()); resetCard() }
   reveal(); scroll()
 }
 function scroll() {
   const hero = document.querySelector<HTMLElement>('.hero-text')
   if (!hero) return
-  const enabled = hover.matches && !reduced.value && !paused.value
+  const enabled = hover.matches && !reduced.value
   hero.style.transform = enabled ? `translateY(${Math.min(window.scrollY, 800) * .2}px)` : ''
   hero.style.opacity = enabled ? String(Math.max(0, 1 - window.scrollY / 600)) : ''
 }
 function pointer(event: PointerEvent) {
-  if (!hover.matches || reduced.value || paused.value) return
+  if (!hover.matches || reduced.value) return
   pointerX = event.clientX; pointerY = event.clientY; pointerTarget = event.target
   if (frame) return
   frame = requestAnimationFrame(() => {
@@ -61,9 +64,9 @@ async function grid() {
   await nextTick()
 }
 async function sweep(cover: boolean) {
-  if (reduced.value || paused.value || !overlay.value) return
+  if (reduced.value || !overlay.value) return
   if (cover || !blocks.value.length) await grid()
-  if (reduced.value || paused.value) { overlay.value.style.visibility = 'hidden'; return }
+  if (reduced.value) { overlay.value.style.visibility = 'hidden'; return }
   overlay.value.style.visibility = 'visible'
   try {
     await Promise.all([...overlay.value.children].map((el, i) => {
@@ -73,24 +76,23 @@ async function sweep(cover: boolean) {
     }))
   } finally { if (!cover && overlay.value) { overlay.value.style.visibility = 'hidden'; overlay.value.getAnimations({ subtree: true }).forEach(a => a.cancel()) } }
 }
-async function leave(_el: Element, done: () => void) { try { await sweep(true) } finally { done() } }
-async function enter(_el: Element, done: () => void) { try { await sweep(false); reveal(); scroll() } finally { done() } }
+async function leave(_el: Element, done: () => void) { entering = true; observer?.disconnect(); try { await sweep(true) } finally { done() } }
+async function enter(_el: Element, done: () => void) { reveal(); try { await sweep(false) } finally { entering = false; reveal(); scroll(); done() } }
 defineExpose({ leave, enter })
 const removeHook = nuxt.hook('page:finish', () => nextTick(() => { resetCard(); reveal(); scroll() }))
 onMounted(() => {
   preference = matchMedia('(prefers-reduced-motion: reduce)'); hover = matchMedia('(hover: hover) and (pointer: fine)')
-  syncMotion(); syncVisibility(); void sweep(false)
+  syncMotion(); syncVisibility(); void sweep(false).finally(() => { entering = false; reveal() })
   preference.addEventListener('change', syncMotion)
   window.addEventListener('scroll', scroll, { passive: true })
   document.addEventListener('pointermove', pointer, { passive: true })
   document.addEventListener('visibilitychange', syncVisibility)
 })
-watch(paused, () => { if (preference) syncMotion() })
 onBeforeUnmount(() => {
   removeHook(); observer?.disconnect(); cancelAnimationFrame(frame); resetCard()
   animations.forEach(a => a.cancel()); preference?.removeEventListener('change', syncMotion)
   window.removeEventListener('scroll', scroll); document.removeEventListener('pointermove', pointer); document.removeEventListener('visibilitychange', syncVisibility)
-  document.documentElement.classList.remove('motion-paused', 'page-is-hidden')
+  document.documentElement.classList.remove('reduced-motion', 'page-is-hidden')
 })
 </script>
 

@@ -1,0 +1,39 @@
+/* CERN's grouped footer structure, with Xintinglei typography and surfaces. */
+.main-footer { margin-top: 48px; padding: 58px 0 28px; background: #08090b; border-top: 1px solid #ffffff18; }
+.main-footer .footer-container { width: min(1200px, calc(100% - 96px)); padding-top: 0; border-top: 0; }
+.main-footer .footer-container::before, .main-footer .footer-container::after { content: none; }
+.main-footer .footer-links { grid-template-columns: 1.6fr 1fr 1fr 1.15fr; gap: 42px; padding: 0 0 48px; }
+.main-footer .footer-identity { padding-right: 28px; border-right: 1px solid #ffffff15; }
+.main-footer .footer-brand-name { font-size: clamp(28px, 3vw, 40px); }
+.main-footer .footer-brand-subtitle { margin-top: 7px; color: #9ca6b2; font-size: 10px; letter-spacing: .14em; }
+.footer-description { margin-top: 25px; color: #9ca6b2; font-size: 12px; line-height: 2; }
+.main-footer .footer-column h2 { margin-bottom: 20px; color: #f1f3f5; font-size: 16px; font-weight: 650; }
+.main-footer .footer-column a { display: flex; align-items: center; gap: 10px; margin: 0; min-height: 37px; color: #aab2bc; font-size: 13px; }
+.main-footer .footer-column a:hover { color: #fff; text-decoration: underline; text-underline-offset: 5px; }
+.main-footer .footer-column a span { color: #6f7c8b; }
+.main-footer .footer-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px 32px; padding-top: 24px; border-top: 1px solid #ffffff15; color: #8b95a1; font-size: 10px; }
+.footer-credits { display: flex; flex-wrap: wrap; gap: 12px 24px; }
+.main-footer .footer-source, .main-footer .footer-license { color: #9ca6b2; }
+.main-footer .footer-source:hover, .main-footer .footer-license:hover { color: #fff; }
+
+/* Keep the original black band; change only the lettering. */
+.marquee-group>span { color: #d4dce3; }
+.marquee-group span.outline { color: transparent; -webkit-text-stroke: 1px #8fa5bb; }
+
+@media (max-width: 1100px) {
+  .main-footer .footer-container { width: calc(100% - 64px); }
+  .main-footer .footer-links { gap: 28px; grid-template-columns: 1.3fr 1fr 1fr 1.1fr; }
+}
+@media (max-width: 900px) {
+  .main-footer .footer-links { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .main-footer .footer-identity { grid-column: 1/-1; padding: 0 0 28px; border-right: 0; border-bottom: 1px solid #ffffff15; }
+  .footer-description { margin-top: 18px; }
+}
+@media (max-width: 600px) {
+  .main-footer { margin-top: 24px; padding-block: 40px 24px; }
+  .main-footer .footer-container { width: calc(100% - 40px); }
+  .main-footer .footer-links { grid-template-columns: 1fr 1fr; gap: 30px 24px; padding-bottom: 30px; }
+  .main-footer .footer-resources { grid-column: 1/-1; }
+  .main-footer .footer-column h2 { margin-bottom: 12px; font-size: 15px; }
+  .main-footer .footer-meta { flex-direction: column; align-items: flex-start; gap: 14px; }
+}
